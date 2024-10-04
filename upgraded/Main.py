@@ -4,9 +4,9 @@ Created on Nov 10, 2021
 @author: Shazib Saleem Warraich
 '''
 
-from upgraded.SendToDB import SentToDb
-from upgraded.ExtractProjectUrl import ExtractProjectUrl
 from upgraded.ExtractProjectDetail import ExtractProjectDetail
+from upgraded.ExtractProjectUrl import ExtractProjectUrl
+from upgraded.SendToDB import SentToDb
 
 
 class Main:

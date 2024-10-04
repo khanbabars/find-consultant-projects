@@ -10,6 +10,8 @@ class LinkBase():
     project_api_location = '?_=0.17910003100031924&ref=&language=sv'
     ###### KEYMAN UPPDRAG ####
     keyman_main_api      = 'https://www.keyman.se/uppdrag'
+    cinode               ="https://cinode.market/requests"
+    cinode_market        = "https://cinode.market"
     
     def get_project_url(self , job_id):
         project_url = self.project_api_base+job_id+self.project_api_location

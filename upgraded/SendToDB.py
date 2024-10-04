@@ -4,13 +4,14 @@ Created on Nov 9, 2021
 @author: Shazib Saleem Warraich
 '''
 import cx_Oracle
+
 from upgraded.DbConfig import DbConfig
 
 
 class SentToDb:
     conf = DbConfig()
     cx_Oracle.init_oracle_client(lib_dir= conf.oracle_client_dir)
-    connection = cx_Oracle.connect(user = conf.atp_user, password= conf.atp_password, dsn= conf.atp_dsn)
+    connection = cx_Oracle.connect(user = conf.atp_user, password= conf.atp_password, dsn= 'tcps://adb.eu-frankfurt-1.oraclecloud.com:1522/odb6lykd5axtqk4_db202007031441_high.atp.oraclecloud.com?wallet_location=C:/Users/pc786/cloud/Wallet_DB202007031441')
     ########################UPGRADED DB#####################################
     def insert_to_db (self, rows):
         db  = self.connection 
@@ -38,6 +39,19 @@ class SentToDb:
         db.commit()
         return
     
+    
+    
+    def truncate_url_dump(self):
+        db  = self.connection 
+        cursor = db.cursor()
+        cursor.execute("""begin
+                   execute immediate 'truncate table url_dump';
+                     end;""")
+        db.commit()
+        return
+    
+    
+      
     def load_url_dump(self, found_href):
         db  = self.connection 
         cursor = db.cursor()
@@ -50,7 +64,7 @@ class SentToDb:
             db  = self.connection 
             cursor = db.cursor()
             url_array = []
-            rows = cursor.execute("select distinct url from url_dump where url like '%data-it%'")    
+            rows = cursor.execute("select distinct url from url_dump where url like '%data-it%' or url like '%administration-ekonomi-juridik%' or url like '%management%'  or url like 'verksamhets-och%' or url like '%chefs-och-ledarskapsstod%' or url like 'miljo-hallbarhet-csr%'")    
             for url in rows:
                 url_array.append(url[0])
             return url_array
@@ -74,31 +88,42 @@ class SentToDb:
         cursor.executemany("insert into keyman_dump(consultant_company, project_page ,project_details, project_url) values (:1, :2, :3, :4)", rows)
         db.commit()
         return
-       
-# Create a table
-
-#cursor.execute("""begin
-#                     execute immediate 'drop table pytab';
-#                     exception when others then if sqlcode <> -942 then raise; end if;
-#                     
-#                                       end;""")
-#cursor.execute("create table pytab (id number, data varchar2(20))")
-
-# Insert some rows
-
-#rows = [ (1, "First" ),
-#         (2, "Second" ),
-#         (3, "Third" ),
-#         (4, "Fourth" ),
-#         (5, "Fifth" ),
-#         (6, "Sixth" ),
-#         (7, "Seventh" ) ]
-
-#cursor.executemany("insert into pytab(id, data) values (:1, :2)", rows)
-
-#connection.commit()  # uncomment to make data persistent
-
-# Now query the rows back
-
-#for row in cursor.execute('select * from load_extracted_dump'):
-#    print(row)
+    
+    
+    ########################CINODE DB#####################################    
+    
+    def select_cinode_dump(self):
+        try:
+            db  = self.connection 
+            cursor = db.cursor()
+            url_array = []
+            rows = cursor.execute("select distinct url from url_dump where url like '%cinode.market/requests/%' and url not in (select project_url from cinode_dump)")    
+            for url in rows:
+                url_array.append(url[0])
+            return url_array
+        except None:
+            pass 
+        
+    
+    def select_cinode_url_dump(self):
+        try:
+            db  = self.connection 
+            cursor = db.cursor()
+            url_array = []
+            rows = cursor.execute("select distinct url from url_dump where url like '%cinode.market/requests/%' and url not in (select project_url from cinode_dump)")    
+            for url in rows:
+                url_array.append(url[0])
+            return url_array
+        except None:
+            pass   
+           
+    
+    
+    def insert_cinode_dump (self, rows):
+        db  = self.connection 
+        cursor = db.cursor()
+        cursor.executemany("insert into cinode_dump(consultant_company, project_page ,project_title, project_url) values (:1, :2, :3, :4)", rows)
+        db.commit()
+        return
+    
+    

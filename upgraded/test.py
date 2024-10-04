@@ -3,14 +3,16 @@ Created on Mar 14, 2022
 
 @author: pc786
 '''
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-import time
 import re
-import requests
 import time
+import time
+
 from bs4 import BeautifulSoup
+import requests
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+
 class ExtractProjectUrl():
     
    def get_job_id (self, url):
